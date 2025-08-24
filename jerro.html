@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeroo Interactive Simulation</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #eef6ff;
+      font-family: Arial, sans-serif;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      grid-template-rows: repeat(4, 80px);
+      gap: 5px;
+      margin-bottom: 30px;
+    }
+    .cell {
+      width: 80px;
+      height: 80px;
+      border: 2px solid #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 26px;
+      background: white;
+      border-radius: 8px;
+      position: relative;
+    }
+    .coords {
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      font-size: 10px;
+      color: #555;
+    }
+    .jeroo {
+      font-size: 34px;
+    }
+    .flower {
+      font-size: 30px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      max-width: 400px;
+      justify-content: center;
+    }
+    .btn {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn:hover {
+      background: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="controls">
+    <button class="btn" onclick="moveRight()">Move Right</button>
+    <button class="btn" onclick="moveLeft()">Move Left</button>
+    <button class="btn" onclick="moveDown()">Move Down</button>
+    <button class="btn" onclick="moveUp()">Move Up</button>
+    <button class="btn" onclick="plantFlower()">Plant Flower</button>
+    <button class="btn" onclick="pickFlower()">Pick Flower</button>
+    <button class="btn" onclick="resetGrid()">Reset</button>
+  </div>
+
+  <script>
+    const grid = document.getElementById("grid");
+    let jeroo;
+    let jRow = 0;
+    let jCol = 0;
+
+    // Create 4x4 grid with coordinates
+    function createGrid() {
+      grid.innerHTML = "";
+      for (let row = 0; row < 4; row++) {
+        for (let col = 0; col < 4; col++) {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.id = `cell-${row}-${col}`;
+          cell.innerHTML = `<span class='coords'>(${row},${col})</span>`;
+          grid.appendChild(cell);
+        }
+      }
+      // Place Jeroo at (0,0)
+      jeroo = document.createElement("span");
+      jeroo.textContent = "🦘";
+      jeroo.className = "jeroo";
+      document.getElementById("cell-0-0").appendChild(jeroo);
+      jRow = 0;
+      jCol = 0;
+    }
+
+    function moveJeroo(newRow, newCol) {
+      if (newRow >= 0 && newRow < 4 && newCol >= 0 && newCol < 4) {
+        jRow = newRow;
+        jCol = newCol;
+        document.getElementById(`cell-${jRow}-${jCol}`).appendChild(jeroo);
+      }
+    }
+
+    function moveRight() { moveJeroo(jRow, jCol + 1); }
+    function moveLeft() { moveJeroo(jRow, jCol - 1); }
+    function moveDown() { moveJeroo(jRow + 1, jCol); }
+    function moveUp() { moveJeroo(jRow - 1, jCol); }
+
+    function plantFlower() {
+      let flower = document.createElement("span");
+      flower.textContent = "🌸";
+      flower.className = "flower";
+      document.getElementById(`cell-${jRow}-${jCol}`).appendChild(flower);
+    }
+
+    function pickFlower() {
+      let cell = document.getElementById(`cell-${jRow}-${jCol}`);
+      let flower = cell.querySelector(".flower");
+      if (flower) {
+        cell.removeChild(flower);
+      }
+    }
+
+    function resetGrid() {
+      createGrid();
+    }
+
+    // Initialize grid
+    createGrid();
+  </script>
+
+</body>
+</html>
